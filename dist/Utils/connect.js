@@ -16,6 +16,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 function connect() {
     return __awaiter(this, void 0, void 0, function* () {
         const dbUri = "mongodb://localhost:27017/car_counter";
+        // const dbUri: string =
+        //   "mongodb+srv://razerspeed:Pulsar200ns@cluster0.pgoe7mv.mongodb.net/test";
         try {
             mongoose_1.default.set("strictQuery", true);
             yield mongoose_1.default.connect(dbUri);

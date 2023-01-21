@@ -20,6 +20,7 @@ var cors = require("cors");
 const port = 3000;
 const app = (0, express_1.default)();
 app.use(cors());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 // app.use(express.json());
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {

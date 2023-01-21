@@ -37,5 +37,9 @@ const carSchema = new mongoose_1.Schema({
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User",
     },
+    state: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 exports.default = mongoose_1.default.model("Car", carSchema);

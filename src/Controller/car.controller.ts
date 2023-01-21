@@ -5,7 +5,7 @@ import UserCar from "../Models/CarUser";
 import { Request, Response } from "express";
 
 export const createCar = async (req: Request, res: Response) => {
-  const { name, count, userId } = req.body;
+  const { name, count, userId, state } = req.body;
 
   try {
     // Check if the user exists in the User model
@@ -22,6 +22,7 @@ export const createCar = async (req: Request, res: Response) => {
       name,
       count,
       user: user,
+      state: state,
     });
     await car.save();
 
@@ -41,10 +42,17 @@ export const createCar = async (req: Request, res: Response) => {
 };
 
 export const getUserCars = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const { userId, state } = req.query;
+  // console.log("state", state);
+  // console.log("req.params", req.query);
 
   try {
-    const user = await UserCar.findOne({ user: userId }).populate("cars");
+    const user = await UserCar.findOne({ user: userId, state: state }).populate(
+      {
+        path: "cars",
+        match: { state: state },
+      }
+    );
     if (!user) {
       throw new Error("User not found");
     }
@@ -56,7 +64,7 @@ export const getUserCars = async (req: Request, res: Response) => {
 
 export const editUserCar = async (req: Request, res: Response) => {
   //   const { userId, carId } = req.params;
-  const { userId, carId, name, count } = req.body;
+  const { userId, carId, name, count, state } = req.body;
   console.log("carId", carId);
   try {
     const user = await UserCar.findOne({ user: userId });
@@ -65,7 +73,7 @@ export const editUserCar = async (req: Request, res: Response) => {
     }
     const car = await Car.findByIdAndUpdate(
       carId,
-      { name, count },
+      { name, count, state },
       { new: true }
     );
     if (!car) {

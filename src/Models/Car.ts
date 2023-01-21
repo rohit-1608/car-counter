@@ -14,6 +14,10 @@ const carSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    state: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

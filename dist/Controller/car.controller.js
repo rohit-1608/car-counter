@@ -17,7 +17,7 @@ const Car_1 = __importDefault(require("../Models/Car"));
 const User_1 = __importDefault(require("../Models/User"));
 const CarUser_1 = __importDefault(require("../Models/CarUser"));
 const createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, count, userId } = req.body;
+    const { name, count, userId, state } = req.body;
     try {
         // Check if the user exists in the User model
         const user = yield User_1.default.findById(userId);
@@ -33,6 +33,7 @@ const createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             name,
             count,
             user: user,
+            state: state,
         });
         yield car.save();
         // Find the UserCar and push the car to the cars array
@@ -52,9 +53,14 @@ const createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.createCar = createCar;
 const getUserCars = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
+    const { userId, state } = req.query;
+    // console.log("state", state);
+    // console.log("req.params", req.query);
     try {
-        const user = yield CarUser_1.default.findOne({ user: userId }).populate("cars");
+        const user = yield CarUser_1.default.findOne({ user: userId, state: state }).populate({
+            path: "cars",
+            match: { state: state },
+        });
         if (!user) {
             throw new Error("User not found");
         }
@@ -67,14 +73,14 @@ const getUserCars = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getUserCars = getUserCars;
 const editUserCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //   const { userId, carId } = req.params;
-    const { userId, carId, name, count } = req.body;
+    const { userId, carId, name, count, state } = req.body;
     console.log("carId", carId);
     try {
         const user = yield CarUser_1.default.findOne({ user: userId });
         if (!user) {
             throw new Error("User not found");
         }
-        const car = yield Car_1.default.findByIdAndUpdate(carId, { name, count }, { new: true });
+        const car = yield Car_1.default.findByIdAndUpdate(carId, { name, count, state }, { new: true });
         if (!car) {
             throw new Error("Car not found");
         }
